@@ -1,0 +1,119 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <div class="container">
+        <!-- 消息提示区域 -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>
+                        {% if message.tags == 'error' %}
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> 错误！
+                        {% elif message.tags == 'warning' %}
+                            <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span> 警告！
+                        {% elif message.tags == 'success' %}
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> 成功！
+                        {% else %}
+                            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> 信息：
+                        {% endif %}
+                    </strong>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div style="margin-bottom: 10px" class="clearfix">
+            <a class="btn btn-success" href="/ipv6/config/add/">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                新建配置表
+            </a>
+
+            <div style="float: right;width: 300px;">
+                <form method="get">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="搜索VLAN"
+                               value="{{ search_data }}">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                      </span>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                IPv6地址配置管理
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>管理员名</th>
+                    <th>业务VLAN</th>
+                    <th>业务网关</th>
+                    <th>DHCP服务器中继地址</th>
+                    <th>发送状态</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset %}
+                    <tr>
+                        <th>{{ obj.id }}</th>
+                        <td>{{ obj.admin_name }}</td>
+                        <td>{{ obj.vlan_id }}</td>
+                        <td>{{ obj.gateway }}</td>
+                        <td>{{ obj.dhcp_relay }}</td>
+                        <td>
+                            {% if obj.send_status == 'success' %}
+                                <span class="label label-success">发送成功</span>
+                            {% elif obj.send_status == 'failed' %}
+                                <span class="label label-danger">发送失败</span>
+                            {% elif obj.send_status == 'sent' %}
+                                <span class="label label-info">已发送</span>
+                            {% else %}
+                                <span class="label label-default">待发送</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ obj.create_time|date:"Y-m-d H:i" }}</td>
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="/ipv6/config/{{ obj.id }}/edit/">编辑</a>
+                            
+                            {% if obj.send_status != 'success' %}
+                                <form action="/ipv6/config/{{ obj.id }}/send/" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-warning btn-xs"
+                                            onclick="return confirm('确定要发送此配置到API吗？')">发送</button>
+                                </form>
+                            {% else %}
+                                <span class="text-success">已发送成功</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        <div class="clearfix">
+            <ul class="pagination">
+                {{ page_string }}
+            </ul>
+
+        </div>
+
+    </div>
+
+{% endblock %}

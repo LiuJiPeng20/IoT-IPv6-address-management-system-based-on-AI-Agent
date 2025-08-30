@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户界面</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.min.css' %}">
+    <style>
+        .navbar {
+            border-radius: 0;
+        }
+        /* 让logo和文字水平居中对齐 */
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand img {
+            height: 100%;
+            max-height: 40px; /* PC端最大高度 */
+            margin-right: 8px;
+        }
+        
+        /* 导航栏高亮样式 - 与分页组件一致的蓝色 */
+        .navbar-nav > li.active > a,
+        .navbar-nav > li.active > a:hover,
+        .navbar-nav > li.active > a:focus {
+            background-color: #337ab7 !important;
+            color: #fff !important;
+            border-radius: 4px;
+        }
+        
+        /* 确保在不同的导航栏主题下都有效 */
+        .navbar-default .navbar-nav > li.active > a,
+        .navbar-default .navbar-nav > li.active > a:hover,
+        .navbar-default .navbar-nav > li.active > a:focus {
+            background-color: #337ab7 !important;
+            color: #fff !important;
+        }
+    </style>
+    {% block css %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'img/nculog.jpg' %}" alt="南昌大学校徽">
+                南昌大学物联网IPv6地址管理系统
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav" id="user-nav">
+                <li><a href="/device/approval/list/">我的设备审批</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">{{ request.session.user_info.name }} <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">个人资料</a></li>
+                        <li><a href="#">我的信息</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/logout/">注销</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div>
+    {% block content %}{% endblock %}
+</div>
+
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.min.js' %}"></script>
+
+<script>
+$(document).ready(function() {
+    // 导航栏高亮功能 - 用户版
+    var currentPath = window.location.pathname;
+    
+    // 定义用户导航栏映射关系
+    var navMapping = {
+        '/device/approval/': '我的设备审批'
+    };
+    
+    // 移除所有active类
+    $('#user-nav li').removeClass('active');
+    
+    // 根据当前路径设置active类
+    for (var path in navMapping) {
+        if (currentPath.indexOf(path) === 0) {
+            $('#user-nav li').each(function() {
+                var linkText = $(this).find('a').text().trim();
+                if (linkText === navMapping[path]) {
+                    $(this).addClass('active');
+                    return false; // 找到匹配项后退出循环
+                }
+            });
+            break;
+        }
+    }
+});
+</script>
+
+{% block js %}{% endblock %}
+</body>
+</html>

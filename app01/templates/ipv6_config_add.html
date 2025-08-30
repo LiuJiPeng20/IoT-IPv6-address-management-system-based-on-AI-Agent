@@ -1,0 +1,91 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <!-- 消息提示区域 -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>
+                        {% if message.tags == 'error' %}
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> 错误！
+                        {% elif message.tags == 'warning' %}
+                            <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span> 警告！
+                        {% elif message.tags == 'success' %}
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> 成功！
+                        {% else %}
+                            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> 信息：
+                        {% endif %}
+                    </strong>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                新建IPv6地址配置
+            </div>
+            <div class="panel-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="{{ form.admin_name.id_for_label }}">{{ form.admin_name.label }}</label>
+                        {{ form.admin_name }}
+                        {% if form.admin_name.errors %}
+                            {% for error in form.admin_name.errors %}
+                                <span class="help-block text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.vlan_id.id_for_label }}">{{ form.vlan_id.label }}</label>
+                        {{ form.vlan_id }}
+                        {% if form.vlan_id.errors %}
+                            {% for error in form.vlan_id.errors %}
+                                <span class="help-block text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.gateway.id_for_label }}">{{ form.gateway.label }}</label>
+                        {{ form.gateway }}
+                        {% if form.gateway.errors %}
+                            {% for error in form.gateway.errors %}
+                                <span class="help-block text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.dhcp_relay.id_for_label }}">{{ form.dhcp_relay.label }}</label>
+                        {{ form.dhcp_relay }}
+                        {% if form.dhcp_relay.errors %}
+                            {% for error in form.dhcp_relay.errors %}
+                                <span class="help-block text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+                            提交
+                        </button>
+                        <a href="/ipv6/config/list/" class="btn btn-default">
+                            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                            返回
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
