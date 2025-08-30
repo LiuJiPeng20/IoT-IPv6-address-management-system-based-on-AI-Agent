@@ -81,8 +81,8 @@ app01/
 
 ### 1.登录页面
 
-<img src="C:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20250829173023858.png" alt="image-20250829173023858" style="zoom:50%;" />
+<img src="app01/static/img/login.png" style="zoom:50%;" />
 
 ### 2.IPv6地址绑定页面
 
-![image-20250829173312088](C:/Users/HP/AppData/Roaming/Typora/typora-user-images/image-20250829173312088.png)
+![image-20250829173312088](app01/static/img/IPv6.png)
