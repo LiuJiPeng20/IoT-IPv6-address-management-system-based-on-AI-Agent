@@ -1,0 +1,165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>物联网IPv6地址管理系统登录</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.min.css' %}">
+    <style>
+        body {
+            background: #ffffff;
+            min-height: 100vh;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+
+        .account {
+            width: 450px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            background: #ffffff;
+
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 60px;
+            padding: 35px 40px;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+        }
+
+        .logo-section img {
+            width: 280px;
+            height: auto;
+            margin: 0 auto 20px auto;
+            display: block;
+        }
+
+        .system-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+        }
+
+        .system-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+            margin-bottom: 0;
+        }
+
+        .account h3 {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #495057;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .form-group label {
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #ffffff;
+            border: 2px solid #ddd;
+            color: #333;
+            padding: 10px 30px;
+            border-radius: 5px;
+            font-weight: 500;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #f8f9fa;
+            border-color: #aaa;
+            color: #333;
+            transform: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-control {
+            border-radius: 5px;
+            border: 2px solid #e9ecef;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #999;
+            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="account">
+        <!-- Logo和系统标题区域 -->
+        <div class="logo-section">
+            <img src="{% static 'img/logoft.jpg' %}" alt="系统Logo" onerror="this.style.display='none'" />
+            <h2 class="system-title">物联网IPv6地址管理系统登录</h2>
+            <p class="system-subtitle">IoT IPv6 Address Management System</p>
+        </div>
+        <div class="panel-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% for field in form %}
+                    {% if field.name == 'code' %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            <div class="row">
+                                <div class="col-xs-7">
+                                    {{ field }}
+                                    <span style="color: red;">{{ field.errors.0 }}</span>
+                                </div>
+                                <div class="col-xs-5">
+                                    <img id="image_code" src="/image/code/" style="width: 125px;">
+                                </div>
+                            </div>
+                        </div>
+                    {% elif field.name == 'identity' %}
+                        <div class="form-group">
+                            <label>{{ field.label }}</label>
+                            <div>
+                                {% for radio in field %}
+                                    <label class="radio-inline">
+                                        {{ radio.tag }} {{ radio.choice_label }}
+                                    </label>
+                                {% endfor %}
+                                <span style="color: red;">{{ field.errors.0 }}</span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            <span style="color: red;">{{ field.errors.0 }}</span>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                <button type="submit" class="btn btn-primary">登 录</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.min.js' %}"></script>
+    <script>
+        $(function () {
+            $("#image_code").click(function () {
+                $(this)[0].src = "/image/code/?" + Math.random();
+            })
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <div class="container">
+        <!-- 消息提示区域 -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>
+                        {% if message.tags == 'error' %}
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> 错误！
+                        {% elif message.tags == 'warning' %}
+                            <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span> 警告！
+                        {% elif message.tags == 'success' %}
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> 成功！
+                        {% else %}
+                            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> 信息：
+                        {% endif %}
+                    </strong>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div style="margin-bottom: 10px" class="clearfix">
+            <!-- 管理员页面不显示搜索功能 -->
+        </div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                设备审批管理
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>用户</th>
+                    <th>部门</th>
+                    <th>楼栋</th>
+                    <th>业务类型</th>
+                    <th>DUID</th>
+                    <th>MAC</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset %}
+                    <tr>
+                        <th>{{ obj.id }}</th>
+                        <td>{{ obj.user }}</td>
+                        <td>{{ obj.department.title }}</td>
+                        <td>{{ obj.get_building_display }}</td>
+                        <td>{{ obj.get_business_type_display }}</td>
+                        <td>{{ obj.duid|default:"无" }}</td>
+                        <td>{{ obj.mac_address|default:"无" }}</td>
+                        <td>{{ obj.get_status_display }}</td>
+                        <td>
+                            {% if obj.status == 2 %} {# 只有审批中才能操作 #}
+                                <form action="/device/approval/{{ obj.id }}/approve/" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-xs" 
+                                            onclick="return confirm('确定要同意此设备审批吗？系统将自动生成IPv6地址并发送到API。')">同意</button>
+                                </form>
+                                <form action="/device/approval/{{ obj.id }}/reject/" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-warning btn-xs"
+                                            onclick="return confirm('确定要拒绝此设备审批吗？')">不同意</button>
+                                </form>
+                            {% else %}
+                                <span class="text-muted">{{ obj.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        <div class="clearfix">
+            <ul class="pagination">
+                {{ page_string }}
+            </ul>
+
+        </div>
+
+    </div>
+
+{% endblock %}
